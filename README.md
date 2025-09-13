@@ -1,6 +1,6 @@
-# NAME
+# Semejantes-API
 
-Lorem ipsum...
+Plataforma web integral que centraliza la gestión de actividades sociales y voluntarios, permitiendo el registro de datos, especialidades y participación en eventos para optimizar la coordinación y planificación.
 
 ## Commands
 
