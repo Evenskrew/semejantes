@@ -1,9 +1,6 @@
 {
   "version": "1",
-  "name": "alex-startup",
+  "name": "semejantes-api",
   "type": "collection",
-  "ignore": [
-    "node_modules",
-    ".git"
-  ]
+  "ignore": ["node_modules", ".git"]
 }
