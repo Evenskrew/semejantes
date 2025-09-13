@@ -18,6 +18,8 @@ node app.js
 
 ## Environment variables
 
+Este archivo contiene las variables de entorno necesarias para ejecutar el proyecto.
+
 ```bash
 PORT=3000
 MONGODB_URI="..."
