@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { issueToken } = require("../utils/issueToken");
 
 exports.signUp = async (req, res) => {
-  const { username, email } = req.body;
+  const { username, email, phone, availability } = req.body;
 
   const existingUser = await User.findOne({ username });
   if (existingUser)
@@ -20,10 +20,12 @@ exports.signUp = async (req, res) => {
   bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
     if (err) return next(err);
 
-    const newUser = new User({
+    newUser = new Voluntario({
       username,
       email,
       password: hashedPassword,
+      phone,
+      availability,
     });
 
     const savedUser = await newUser.save();
