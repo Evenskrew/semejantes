@@ -6,7 +6,6 @@ exports.signUp = async (req, res) => {
   const { username, email } = req.body;
 
   const existingUser = await User.findOne({ username });
-  console.log({ existingUser });
   if (existingUser)
     return res
       .status(400)
