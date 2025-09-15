@@ -21,7 +21,7 @@ const UserSchema = new Schema(
     password: { type: String, minLength: 3, maxLength: 512, required: true },
     role: {
       type: String,
-      enum: ["Voluntario", "Coordinador"],
+      enum: ["Volunteer", "Coordinator"],
       required: true,
     },
     phone: [{ type: Number }],
@@ -35,15 +35,15 @@ const UserSchema = new Schema(
 const User = mongoose.model("User", UserSchema);
 
 const CoordinatorSchema = new Schema({
-  cargo: { type: String, required: true },
+  position: { type: String, required: true },
 });
 
-const Coordinador = User.discriminator("Coordinador", CoordinatorSchema);
+const Coordinator = User.discriminator("Coordinator", CoordinatorSchema);
 
 const VolunteerSchema = new Schema({
-  disponibilidad: { type: String, required: true },
+  availability: { type: String, required: true },
 });
 
-const Voluntario = User.discriminator("Voluntario", VolunteerSchema);
+const Volunteer = User.discriminator("Volunteer", VolunteerSchema);
 
-module.exports = { User, Coordinador, Voluntario };
+module.exports = { User, Coordinator, Volunteer };

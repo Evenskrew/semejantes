@@ -1,4 +1,4 @@
-const User = require("./../user/user.model");
+const { User, Volunteer, Coordinator } = require("../user/user.model.js");
 const bcrypt = require("bcrypt");
 const { issueToken } = require("../utils/issueToken");
 
@@ -20,7 +20,7 @@ exports.signUp = async (req, res) => {
   bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
     if (err) return next(err);
 
-    newUser = new Voluntario({
+    newUser = new Volunteer({
       username,
       email,
       password: hashedPassword,
