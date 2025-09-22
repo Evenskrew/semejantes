@@ -42,6 +42,8 @@ const Coordinator = User.discriminator("Coordinator", CoordinatorSchema);
 
 const VolunteerSchema = new Schema({
   availability: { type: String, required: true },
+  hoursContributed: { type: Number, default: 0 },
+  speciality: { type: String, required: true },
 });
 
 const Volunteer = User.discriminator("Volunteer", VolunteerSchema);
