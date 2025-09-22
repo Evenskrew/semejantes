@@ -9,7 +9,6 @@ const authUser = (req, res, next) => {
       .json({ status: "fail", data: { message: "Unauthorized." } });
   }
 
-  // Remove 'Bearer'. Verify won't accept the token with it
   token = token.substr(7);
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -19,7 +18,6 @@ const authUser = (req, res, next) => {
         .json({ status: "fail", data: { message: "Invalid token." } });
     }
 
-    // If the token is valid, set it as a request property
     req.user = decoded;
     next();
   });
