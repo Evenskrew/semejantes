@@ -4,6 +4,7 @@ const express = require("express");
 const connectMongoDB = require("./config/mongo-db");
 const authRouter = require("./src/auth/auth.route");
 const usersRouter = require("./src/user/user.route");
+const eventsRouter = require("./src/event/event.route");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/events", eventsRouter);
 
 app.get("/", (req, res) => {
   res.json({
