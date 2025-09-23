@@ -84,12 +84,7 @@
     </section>
 
     <script>
-      const API_URL = "/api/events"; // cambia según tu ruta backend
-      const token = localStorage.getItem("token") || "";
-      if (!token) {
-        alert("No estás logueado. Redirigiendo a login...");
-        window.location.href = "/auth.html";
-        }
+      const API_URL = "/api/events"; // ajusta según tu backend
 
       function showResponse(data) {
         document.getElementById("responseBox").value = JSON.stringify(
@@ -109,9 +104,9 @@
 
         const res = await fetch(`${API_URL}`, {
           method: "POST",
+          credentials: "include", // 👈 cookie enviada automáticamente
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
           },
           body: JSON.stringify(body),
         });
@@ -123,7 +118,7 @@
       // READ (GET)
       async function getEvents() {
         const res = await fetch(`${API_URL}`, {
-          headers: { Authorization: token },
+          credentials: "include",
         });
         const data = await res.json();
         document.getElementById("eventsBox").value = JSON.stringify(
@@ -139,9 +134,9 @@
         const id = document.getElementById("pe-id").value;
         const res = await fetch(`${API_URL}/${id}/participate`, {
           method: "PATCH",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
           },
         });
 
@@ -160,9 +155,9 @@
 
         const res = await fetch(`${API_URL}/${id}`, {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token,
           },
           body: JSON.stringify(body),
         });
@@ -176,9 +171,8 @@
         const id = document.getElementById("de-id").value;
         const res = await fetch(`${API_URL}/${id}`, {
           method: "DELETE",
-          headers: { Authorization: token },
+          credentials: "include",
         });
-
         const data = await res.json();
         showResponse(data);
       }
