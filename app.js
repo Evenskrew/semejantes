@@ -9,6 +9,9 @@ const eventsRouter = require("./src/event/event.route");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const cookieParser = require("cookie-parser"); //Agregué esto
+app.use(cookieParser());
+
 connectMongoDB();
 app.use(express.json());
 app.use(express.static("public"));
