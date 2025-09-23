@@ -88,6 +88,7 @@ exports.signUp = async (req, res) => {
 };
 
 // Login de usuario
+// Login de usuario
 exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -113,9 +114,24 @@ exports.signIn = async (req, res) => {
     }
 
     const token = issueToken(user);
-    res.status(200).json({ status: "success", data: { user, token } });
+
+    // Configurar cookie con token
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    // ✅ Importante: responder
+    return res.status(200).json({
+      status: "success",
+      message: "Login successful",
+      user: { id: user._id, email: user.email },
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ status: "error", message: err.message });
+    return res.status(500).json({ status: "error", message: err.message });
   }
 };
+
