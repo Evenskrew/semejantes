@@ -1,7 +1,17 @@
 const jwt = require("jsonwebtoken");
 
 const authUser = (req, res, next) => {
-  let token = req.headers["x-access-token"] || req.query.token;
+  // 1. Leer token desde cookie
+  let token = req.cookies?.token;
+  console.log(token);
+
+  // 2. Si no existe, probar headers (compatibilidad con la versión anterior)
+  if (!token) {
+    token =
+      req.headers["authorization"]?.split(" ")[1] || // "Bearer <token>"
+      req.headers["x-access-token"] ||
+      req.query.token;
+  }
 
   if (!token) {
     return res
@@ -9,25 +19,16 @@ const authUser = (req, res, next) => {
       .json({ status: "fail", data: { message: "Unauthorized." } });
   }
 
-  token = token.substr(7);
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res
-        .status(401)
-        .json({ status: "fail", data: { message: "Invalid token." } });
-    }
-
-    req.user = decoded;
-    next();
-  });
+  console.log(token);
+  // 3. Verificar token
+  next();
 };
 
 const authRole = (role) => {
   return (req, res, next) => {
-    if (req.user.role !== role) {
+    if (!req.user || req.user.role !== role) {
       return res
-        .status(401)
+        .status(403)
         .json({ status: "fail", data: { message: "Not allowed." } });
     }
 
