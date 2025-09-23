@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 connectMongoDB();
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
