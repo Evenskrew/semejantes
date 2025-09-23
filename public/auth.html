@@ -71,12 +71,6 @@
       <button onclick="signIn()">Sign In</button>
     </section>
 
-    <!-- TOKEN -->
-    <section>
-      <h2>Token</h2>
-      <textarea id="tokenBox" readonly></textarea>
-    </section>
-
     <!-- RESPUESTA -->
     <section>
       <h2>Respuesta</h2>
@@ -84,8 +78,6 @@
     </section>
 
     <script>
-      let token = "";
-
       function toggleFields() {
         const role = document.getElementById("su-role").value;
         document.getElementById("volunteer-fields").style.display =
@@ -114,6 +106,7 @@
 
         const res = await fetch("/api/auth/sign-up", {
           method: "POST",
+          credentials: "include", 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
@@ -128,16 +121,12 @@
 
         const res = await fetch("/api/auth/sign-in", {
           method: "POST",
+          credentials: "include", 
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });
 
         const data = await res.json();
-        if (data.data && data.data.token) {
-          token = data.data.token;
-          document.getElementById("tokenBox").value = token;
-          localStorage.setItem("token", token); // guardar token para usar en otras páginas
-        }
         showResponse(data);
       }
 
@@ -151,3 +140,4 @@
     </script>
   </body>
 </html>
+
