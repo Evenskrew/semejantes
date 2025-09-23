@@ -83,7 +83,6 @@
 
     <script>
       const API_URL = "/api/users"; // ajusta según tu backend
-      const token = localStorage.getItem("token") || "";
 
       function showResponse(data) {
         document.getElementById("responseBox").value = JSON.stringify(
@@ -96,7 +95,7 @@
       // GET ALL
       async function getUsers() {
         const res = await fetch(`${API_URL}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include", // 👈 manda la cookie automáticamente
         });
         const data = await res.json();
         document.getElementById("usersBox").value = JSON.stringify(
@@ -111,7 +110,7 @@
       async function getUser() {
         const id = document.getElementById("gu-id").value;
         const res = await fetch(`${API_URL}/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
         });
         const data = await res.json();
         showResponse(data);
@@ -121,7 +120,7 @@
       async function getUsersByDay() {
         const day = document.getElementById("gu-day").value;
         const res = await fetch(`${API_URL}/day/${day}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
         });
         const data = await res.json();
         showResponse(data);
@@ -139,9 +138,9 @@
 
         const res = await fetch(`${API_URL}/${id}`, {
           method: "PUT",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body),
         });
@@ -155,7 +154,7 @@
         const id = document.getElementById("du-id").value;
         const res = await fetch(`${API_URL}/${id}`, {
           method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials: "include",
         });
         const data = await res.json();
         showResponse(data);
