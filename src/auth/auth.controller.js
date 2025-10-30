@@ -2,25 +2,62 @@ const { User, Volunteer, Coordinator } = require("../user/user.model.js");
 const bcrypt = require("bcrypt");
 const { issueToken } = require("../utils/issueToken");
 
-exports.signUp = async (req, res) => {
-  try {
+
+exports.signUpCoordinator = async (req, res) => {
     const {
       username,
       email,
       password,
       phone,
-      role,
-      availability,
-      speciality,
-      hoursContributed,
       position,
     } = req.body;
 
-    if (!username || !email || !password || !role) {
+    if (await User.findOne({ username })) {
+      return res.status(400).json({
+        status: "fail",
+        data: { username: "Username already exists." },
+      });
+    }
+
+    if (await User.findOne({ email })) {
       return res
         .status(400)
-        .json({ status: "fail", message: "Required fields are missing" });
+        .json({ status: "fail", data: { email: "Email already exists." } });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = new Coordinator({
+        username,
+        email,
+        password: hashedPassword,
+        phone,
+        role: "Coordinator",
+        position,
+      });
+    
+
+    const savedUser = await newUser.save();
+    const token = issueToken(savedUser);
+
+    res
+      .status(201)
+      .json({ status: "success", data: { user: savedUser, token } });
+
+  
+  
+};
+
+exports.signUpVolunteer = async (req,res) => {
+  const {
+      username,
+      email,
+      password,
+      phone,
+      availability,
+      speciality,
+      hoursContributed,
+    } = req.body;
 
     if (await User.findOne({ username })) {
       return res.status(400).json({
@@ -39,55 +76,27 @@ exports.signUp = async (req, res) => {
 
     let newUser;
 
-    if (role === "Volunteer") {
-      if (!availability || !speciality) {
-        return res
-          .status(400)
-          .json({ status: "fail", message: "Volunteer fields are missing" });
-      }
-
       newUser = new Volunteer({
         username,
         email,
         password: hashedPassword,
         phone,
-        role,
+        role: "Volunteer",
         availability,
         speciality,
         hoursContributed: hoursContributed || 0,
       });
-    } else if (role === "Coordinator") {
-      if (!position) {
-        return res
-          .status(400)
-          .json({ status: "fail", message: "Coordinator fields are missing" });
-      }
 
-      newUser = new Coordinator({
-        username,
-        email,
-        password: hashedPassword,
-        phone,
-        role,
-        position,
-      });
-    } else {
-      return res.status(400).json({ status: "fail", message: "Invalid role" });
-    }
-
-    const savedUser = await newUser.save();
+          const savedUser = await newUser.save();
     const token = issueToken(savedUser);
 
     res
       .status(201)
       .json({ status: "success", data: { user: savedUser, token } });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ status: "error", message: err.message });
-  }
+
+
 };
 
-// Login de usuario
 // Login de usuario
 exports.signIn = async (req, res) => {
   try {
@@ -113,14 +122,15 @@ exports.signIn = async (req, res) => {
         .json({ status: "fail", message: "Invalid email or password" });
     }
 
+    
     const token = issueToken(user);
 
     // Configurar cookie con token
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Lax",
-      maxAge: 24 * 60 * 60 * 1000,
+    res.cookie("token", token, { //la respuesta incluye una cuki, nombre de cucki, data de kuki
+      httpOnly: true, //cuki tipo httpOnly
+      secure: process.env.NODE_ENV === "production", //si secure == true, mandala solo si quien te lo pide es httpS, revisa si estoy en entorno de producción correcto
+      sameSite: "Lax", //cuki solo se manda entre diferentes sitios (permite flujo de info entre fe y be)
+      maxAge: 24 * 60 * 60 * 1000, //tiempo de vida maximo de kuki
     });
 
     // ✅ Importante: responder
