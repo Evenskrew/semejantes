@@ -7,12 +7,14 @@ const usersRouter = require("./src/user/user.route");
 const eventsRouter = require("./src/event/event.route");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 const cookieParser = require("cookie-parser"); //Agregué esto
 app.use(cookieParser());
 
-connectMongoDB();
+if (process.env.NODE_ENV !== "test") {
+  connectMongoDB();
+}
+
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -21,7 +23,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/events", eventsRouter);
 
 app.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
     message: "Mi primera backend :D",
   });
 });
@@ -33,6 +35,4 @@ app.use((req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+module.exports = app;

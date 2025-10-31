@@ -1,4 +1,6 @@
-const validateSignUpCoordinator = [
+const { body, validationResult } = require("express-validator");
+
+exports.validateSignUpCoordinator = [
   body("username").isLength({ min: 6 }).withMessage("Invalid Username"),
   body("email").isEmail().withMessage("Invalid email format"),
   body("password")
@@ -12,7 +14,7 @@ const validateSignUpCoordinator = [
     .withMessage("Position must be at least 20 characters long"),
 ];
 
-const validateSignUpVolunteer = [
+exports.validateSignUpVolunteer = [
   body("username").isLength({ min: 6 }).withMessage("Invalid Username"),
   body("email").isEmail().withMessage("Invalid email format"),
   body("password")
@@ -27,7 +29,7 @@ const validateSignUpVolunteer = [
     .withMessage("HoursContributed must be a number"),
 ];
 
-const handleValidationErrors = (req, res, next) => {
+exports.handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
