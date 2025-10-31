@@ -22,6 +22,7 @@ const validateSignUpVolunteer = [
     .isLength({ min: 3 })
     .withMessage("Phone must be at least 3 characters long"),
   body("HoursContributed")
+    .optional()
     .isFloat({ min: 2 })
     .withMessage("HoursContributed must be a number"),
 ];
