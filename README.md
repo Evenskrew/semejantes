@@ -13,7 +13,13 @@ npm install
 To run:
 
 ```bash
-node app.js
+npm run start
+```
+
+To test:
+
+```bash
+npm run test
 ```
 
 ## Environment variables
