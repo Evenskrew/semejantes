@@ -10,8 +10,8 @@ exports.validateSignUpCoordinator = [
     .isLength({ min: 3 })
     .withMessage("Phone must be at least 3 characters long"),
   body("position")
-    .isLength({ min: 20 })
-    .withMessage("Position must be at least 20 characters long"),
+    .isLength({ min: 3 })
+    .withMessage("Position must be at least 3 characters long"),
 ];
 
 exports.validateSignUpVolunteer = [
@@ -32,6 +32,7 @@ exports.validateSignUpVolunteer = [
 exports.handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log("errorrrrrrrrrrrrrrrrrrrrrrrrr");
     return res.status(400).json({ errors: errors.array() });
   }
   next();
