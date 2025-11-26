@@ -2,26 +2,14 @@ const { User } = require("./user.model");
 
 // Obtener todos los usuarios
 exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find();
-    res.status(200).json({ status: "success", data: users });
-  } catch (err) {
-    res.status(500).json({ status: "error", message: err.message });
-  }
+  const users = await User.find();
+  res.status(200).json({ status: "success", data: users });
 };
 // Obtener un usuario por ID
 exports.getUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ status: "fail", message: "User not found" });
-    }
-    res.status(200).json({ status: "success", data: user });
-  } catch (err) {
-    res.status(500).json({ status: "error", message: err.message });
-  }
+  const user = await User.findById(req.params.id);
+
+  res.status(200).json({ status: "success", data: user });
 };
 
 exports.getUsersByDay = async (req, res) => {

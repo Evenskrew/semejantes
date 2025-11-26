@@ -1,0 +1,19 @@
+meta {
+  name: Get Events
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/api/events
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-access-token: token=Bearer%20eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGNkZTY5MmRmYjJmNzQ5YTllZTU2ZmYiLCJpZCI6IjY4Y2RlNjkyZGZiMmY3NDlhOWVlNTZmZiIsInJvbGUiOiJDb29yZGluYXRvciIsImlhdCI6MTc1OTg2NTg2OCwiZXhwIjoxNzYwMDM4NjY4fQ.z4erXqVEzJvrOZZ5Katq_bJlYpqo5eoQ6Tqt9CWWQwQ; Max-Age=86400; Path=/; Expires=Wed, 08 Oct 2025 19:37:48 GMT; HttpOnly; SameSite=Lax
+}
+
+settings {
+  encodeUrl: true
+}

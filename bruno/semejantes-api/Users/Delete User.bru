@@ -1,0 +1,19 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://localhost:3000/api/users/68d03f3c29a12290d260d983
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-access-token: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGNkZTY5MmRmYjJmNzQ5YTllZTU2ZmYiLCJpZCI6IjY4Y2RlNjkyZGZiMmY3NDlhOWVlNTZmZiIsInJvbGUiOiJDb29yZGluYXRvciIsImlhdCI6MTc1ODQ2OTgxMCwiZXhwIjoxNzU4NjQyNjEwfQ.6UXUEH7ijJJ3wKAI4lpdsWaAYUC3-CVyBFqW4k8Ofu4
+}
+
+settings {
+  encodeUrl: true
+}

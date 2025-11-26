@@ -94,3 +94,43 @@ exports.updateEvent = async (req, res) => {
 
   res.status(200).json({ status: "success", data: event });
 };
+// Buscar como cambiar el try/catch
+exports.addEventReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { postDescription } = req.body;
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Evento no encontrado" });
+    }
+
+    const eventDate = new Date(event.date);
+    const now = new Date();
+    if (eventDate > now) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Solo se pueden editar eventos que ya ocurrieron",
+      });
+    }
+
+    if (postDescription) event.postDescription = postDescription;
+
+    if (req.files && req.files.length > 0) {
+      const imagePaths = req.files.map((file) => `/uploads/${file.filename}`);
+      event.postImages = (event.postImages || []).concat(imagePaths);
+    }
+
+    await event.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Detalles del evento actualizados correctamente",
+      data: event,
+    });
+  } catch (error) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const { Schema } = mongoose;
 
 const EventSchema = new Schema(
@@ -13,6 +12,9 @@ const EventSchema = new Schema(
         ref: "User",
       },
     ],
+
+    postDescription: { type: String },
+    postImages: [{ type: String }],
   },
   { timestamps: true }
 );

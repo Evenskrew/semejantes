@@ -1,0 +1,19 @@
+meta {
+  name: Participate In Event
+  type: http
+  seq: 3
+}
+
+patch {
+  url: http://localhost:3000/api/events/68d1700b74c15fb9d874aa43/participate
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-access-token: token=Bearer%20eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGNkZTY5MmRmYjJmNzQ5YTllZTU2ZmYiLCJpZCI6IjY4Y2RlNjkyZGZiMmY3NDlhOWVlNTZmZiIsInJvbGUiOiJDb29yZGluYXRvciIsImlhdCI6MTc1OTg2NTkyNSwiZXhwIjoxNzYwMDM4NzI1fQ.k8xaalVMOk0aDucsLv4Kel5l3NJc8IxGpSDiV8-VtUM; Max-Age=86400; Path=/; Expires=Wed, 08 Oct 2025 19:38:45 GMT; HttpOnly; SameSite=Lax
+}
+
+settings {
+  encodeUrl: true
+}

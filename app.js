@@ -2,6 +2,7 @@ require("dotenv").config({ quiet: true });
 
 const express = require("express");
 const connectMongoDB = require("./config/mongo-db");
+const connectPostgres = require("./config/postgres-db");
 const authRouter = require("./src/auth/auth.route");
 const usersRouter = require("./src/user/user.route");
 const eventsRouter = require("./src/event/event.route");
