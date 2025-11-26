@@ -1,38 +1,36 @@
-const { User, Volunteer, Coordinator } = require("../user/user.model.js");
+const { User } = require("../user/user.model.js");
 const bcrypt = require("bcrypt");
 const { issueToken } = require("../utils/issueToken");
 
 exports.signUpCoordinator = async (req, res) => {
   const { username, email, password, phone, position } = req.body;
 
-  if (await User.findOne({ username })) {
-    return res.status(400).json({
-      status: "fail",
-      data: { username: "Username already exists." },
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "Email already exists." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const savedUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      phone: phone ? String(phone) : null,
+      role: "Coordinator",
+      position,
     });
+
+    const token = issueToken(savedUser);
+    res
+      .status(201)
+      .json({ status: "success", data: { user: savedUser, token } });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
   }
-
-  if (await User.findOne({ email })) {
-    return res
-      .status(400)
-      .json({ status: "fail", data: { email: "Email already exists." } });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newUser = new Coordinator({
-    username,
-    email,
-    password: hashedPassword,
-    phone,
-    role: "Coordinator",
-    position,
-  });
-
-  const savedUser = await newUser.save();
-  const token = issueToken(savedUser);
-
-  res.status(201).json({ status: "success", data: { user: savedUser, token } });
 };
 
 exports.signUpVolunteer = async (req, res) => {
@@ -46,41 +44,36 @@ exports.signUpVolunteer = async (req, res) => {
     hoursContributed,
   } = req.body;
 
-  if (await User.findOne({ username })) {
-    return res.status(400).json({
-      status: "fail",
-      data: { username: "Username already exists." },
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "Email already exists." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const savedUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      phone: phone ? String(phone) : null,
+      role: "Volunteer",
+      availability,
+      speciality,
+      hoursContributed: hoursContributed || 0,
     });
+
+    const token = issueToken(savedUser);
+    res
+      .status(201)
+      .json({ status: "success", data: { user: savedUser, token } });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
   }
-
-  if (await User.findOne({ email })) {
-    return res
-      .status(400)
-      .json({ status: "fail", data: { email: "Email already exists." } });
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  let newUser;
-
-  newUser = new Volunteer({
-    username,
-    email,
-    password: hashedPassword,
-    phone,
-    role: "Volunteer",
-    availability,
-    speciality,
-    hoursContributed: hoursContributed || 0,
-  });
-
-  const savedUser = await newUser.save();
-  const token = issueToken(savedUser);
-
-  res.status(201).json({ status: "success", data: { user: savedUser, token } });
 };
 
-// Login de usuario
 exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -91,7 +84,7 @@ exports.signIn = async (req, res) => {
         .json({ status: "fail", message: "Require Email and password" });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res
         .status(401)
@@ -107,20 +100,17 @@ exports.signIn = async (req, res) => {
 
     const token = issueToken(user);
 
-    // Configurar cookie con token
     res.cookie("token", token, {
-      //la respuesta incluye una cuki, nombre de cucki, data de kuki
-      httpOnly: true, //cuki tipo httpOnly
-      secure: process.env.NODE_ENV === "production", //si secure == true, mandala solo si quien te lo pide es httpS, revisa si estoy en entorno de producción correcto
-      sameSite: "Lax", //cuki solo se manda entre diferentes sitios (permite flujo de info entre fe y be)
-      maxAge: 24 * 60 * 60 * 1000, //tiempo de vida maximo de kuki
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
-    // ✅ Importante: responder
     return res.status(200).json({
       status: "success",
       message: "Login successful",
-      user: { id: user._id, email: user.email },
+      user: { id: user.id, email: user.email },
     });
   } catch (err) {
     console.error(err);

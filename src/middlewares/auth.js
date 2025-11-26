@@ -1,14 +1,12 @@
 const jwt = require("jsonwebtoken");
 
 const authUser = (req, res, next) => {
-  // 1. Leer token desde cookie
   let token = req.cookies?.token;
   console.log(token);
 
-  // 2. Si no existe, probar headers (compatibilidad con la versión anterior)
   if (!token) {
     token =
-      req.headers["authorization"]?.split(" ")[1] || // "Bearer <token>"
+      req.headers["authorization"]?.split(" ")[1] ||
       req.headers["x-access-token"] ||
       req.query.token;
   }
@@ -20,7 +18,6 @@ const authUser = (req, res, next) => {
   }
 
   console.log(token);
-  // 3. Verificar token
   next();
 };
 

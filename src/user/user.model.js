@@ -1,51 +1,60 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../../config/sql-db");
 
-const { Schema } = mongoose;
-
-const UserSchema = new Schema(
+const User = sequelize.define(
+  "User",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     username: {
-      type: String,
-      minLength: 3,
-      maxLength: 32,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
-      required: true,
+      validate: { len: [3, 32] },
     },
     email: {
-      type: String,
-      minLength: 3,
-      maxLength: 256,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
-      required: true,
+      validate: { isEmail: true },
     },
-    password: { type: String, minLength: 3, maxLength: 512, required: true },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     role: {
-      type: String,
-      enum: ["Volunteer", "Coordinator"],
-      required: true,
+      type: DataTypes.ENUM("Volunteer", "Coordinator"),
+      allowNull: false,
     },
-    phone: [{ type: Number }],
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    position: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    availability: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    speciality: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    hoursContributed: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
   {
     timestamps: true,
-    discriminatorKey: "role",
   }
 );
 
-const User = mongoose.model("User", UserSchema);
-
-const CoordinatorSchema = new Schema({
-  position: { type: String, required: true },
-});
-
-const Coordinator = User.discriminator("Coordinator", CoordinatorSchema);
-
-const VolunteerSchema = new Schema({
-  availability: { type: String, required: true },
-  hoursContributed: { type: Number, default: 0 },
-  speciality: { type: String, required: true },
-});
-
-const Volunteer = User.discriminator("Volunteer", VolunteerSchema);
-
-module.exports = { User, Coordinator, Volunteer };
+module.exports = { User, Volunteer: User, Coordinator: User };

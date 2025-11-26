@@ -1,13 +1,12 @@
 const express = require("express");
 const controller = require("./auth.controller");
-
-const router = express.Router();
-
+const { handleValidationErrors } = require("../middlewares/validateHelper"); //
 const {
   validateSignUpCoordinator,
   validateSignUpVolunteer,
-  handleValidationErrors,
 } = require("./auth.validate.js");
+
+const router = express.Router();
 
 router.post(
   "/sign-up-coordinator",

@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 
 exports.validateCreateEvent = [
   body("description")
@@ -10,23 +10,3 @@ exports.validateCreateEvent = [
     .toDate(),
   body("duration").isFloat().withMessage("duration must be a number"),
 ];
-
-exports.handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-};
-
-exports.validateEventId = [
-  param("id").isMongoId().withMessage("Event ID is not valid"),
-];
-
-exports.handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-};

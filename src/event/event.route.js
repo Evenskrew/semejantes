@@ -1,11 +1,9 @@
 const express = require("express");
 const controller = require("./event.controller");
 const { authUser, authRole } = require("../middlewares/auth");
+const { handleValidationErrors } = require("../middlewares/validateHelper"); //
+const { validateCreateEvent } = require("./event.validate.js");
 
-const {
-  validateCreateEvent,
-  handleValidationErrors,
-} = require("./event.validate.js");
 const router = express.Router();
 
 router.post(
@@ -16,13 +14,18 @@ router.post(
   handleValidationErrors,
   controller.createEvent
 );
+
 router.get("/", authUser, controller.getEvents);
+
 router.patch(
   "/:id/participate",
   authUser,
   authRole("Volunteer"),
   controller.participateEvent
 );
+
+router.put("/:id", authUser, authRole("Coordinator"), controller.updateEvent);
+
 router.delete(
   "/:id",
   authUser,

@@ -1,4 +1,4 @@
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 
 exports.validateSignUpCoordinator = [
   body("username").isLength({ min: 6 }).withMessage("Invalid Username"),
@@ -28,12 +28,3 @@ exports.validateSignUpVolunteer = [
     .isFloat({ min: 2 })
     .withMessage("HoursContributed must be a number"),
 ];
-
-exports.handleValidationErrors = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log("errorrrrrrrrrrrrrrrrrrrrrrrrr");
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-};

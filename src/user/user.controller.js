@@ -1,44 +1,58 @@
 const { User } = require("./user.model");
+const { Op } = require("sequelize");
 
-// Obtener todos los usuarios
 exports.getUsers = async (req, res) => {
-  const users = await User.find();
-  res.status(200).json({ status: "success", data: users });
+  try {
+    const users = await User.findAll();
+    res.status(200).json({ status: "success", data: users });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
 };
-// Obtener un usuario por ID
-exports.getUser = async (req, res) => {
-  const user = await User.findById(req.params.id);
 
-  res.status(200).json({ status: "success", data: user });
+exports.getUser = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "User not found" });
+    }
+    res.status(200).json({ status: "success", data: user });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
 };
 
 exports.getUsersByDay = async (req, res) => {
   try {
     const { day } = req.params;
-
-    const users = await User.find({ availability: new RegExp(day, "i") });
-
+    const users = await User.findAll({
+      where: {
+        availability: {
+          [Op.iLike]: `%${day}%`,
+        },
+      },
+    });
     res.status(200).json({ status: "success", data: users });
   } catch (error) {
     res.status(500).json({ status: "error", message: error.message });
   }
 };
 
-// Actualizar un usuario
 exports.updateUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ status: "fail", message: "User not found" });
-    }
-
-    Object.keys(req.body).forEach((key) => {
-      user[key] = req.body[key];
+    const [updatedRows] = await User.update(req.body, {
+      where: { id: req.params.id },
     });
 
-    const updatedUser = await user.save();
+    if (updatedRows === 0) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "User not found or no changes made" });
+    }
+
+    const updatedUser = await User.findByPk(req.params.id);
     res.status(200).json({ status: "success", data: updatedUser });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
@@ -47,8 +61,11 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
+    const deletedRows = await User.destroy({
+      where: { id: req.params.id },
+    });
+
+    if (deletedRows === 0) {
       return res
         .status(404)
         .json({ status: "fail", message: "User not found" });
