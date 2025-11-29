@@ -1,0 +1,23 @@
+meta {
+  name: Login Volunteer
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/api/auth/sign-in
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "vol@sql.com",
+    "password": "123456"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

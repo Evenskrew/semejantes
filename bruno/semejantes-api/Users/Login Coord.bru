@@ -1,0 +1,23 @@
+meta {
+  name: Login Coord
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/auth/sign-in
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "admin@admin.com",
+    "password": "123456"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

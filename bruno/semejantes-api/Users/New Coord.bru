@@ -1,0 +1,26 @@
+meta {
+  name: New Coord
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/auth/sign-up-coordinator
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "SuperAdmin",
+    "email": "admin@admin.com",
+    "password": "123456",
+    "phone": "99999999",
+    "position": "Jefe Supremo"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
