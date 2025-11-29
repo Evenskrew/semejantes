@@ -6,7 +6,7 @@ meta {
 
 post {
   url: http://localhost:3000/api/events
-  body: json
+  body: multipartForm
   auth: bearer
 }
 
@@ -24,6 +24,17 @@ body:json {
     "place": "Parque italia, Valparaíso",
     "requirements": "Ninguno"
   }
+}
+
+body:multipart-form {
+  title: Evento Con foto 3 @contentType(Text)
+  description: Testeo de subida a amazon @contentType(Text)
+  date: 2026-10-20 @contentType(Text)
+  time: 20:00 @contentType(Text)
+  duration: 3 @contentType(Text)
+  place: Cine Hoyts @contentType(Text)
+  requirements: Que se suba la foto @contentType(Text)
+  photos: @file(C:\Users\Alex\Downloads\cine hoyts.jpg) @contentType(File)
 }
 
 settings {
