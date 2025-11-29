@@ -3,13 +3,15 @@ const controller = require("./event.controller");
 const { authUser, authRole } = require("../middlewares/auth");
 const { handleValidationErrors } = require("../middlewares/validate.helper"); //
 const { validateCreateEvent } = require("./event.validate.js");
-
+const upload = require("../middlewares/upload.middleware");
 const router = express.Router();
 
 router.post(
   "/",
   authUser,
   authRole("Coordinator"),
+  upload.array("photos", 5),
+  validateCreateEvent,
   handleValidationErrors,
   controller.createEvent
 );
@@ -23,7 +25,13 @@ router.patch(
   controller.participateEvent
 );
 
-router.put("/:id", authUser, authRole("Coordinator"), controller.updateEvent);
+router.put(
+  "/:id",
+  authUser,
+  authRole("Coordinator"),
+  upload.array("photos", 5),
+  controller.updateEvent
+);
 
 router.delete(
   "/:id",

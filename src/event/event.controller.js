@@ -4,7 +4,13 @@ const { User } = require("../user/user.model");
 exports.createEvent = async (req, res) => {
   const { title, description, date, time, duration, place, requirements } =
     req.body;
+
   try {
+    let imageUrls = [];
+    if (req.files && req.files.length > 0) {
+      imageUrls = req.files.map((file) => file.location);
+    }
+
     const event = await Event.create({
       title,
       description,
@@ -13,6 +19,8 @@ exports.createEvent = async (req, res) => {
       duration,
       place,
       requirements,
+      images: imageUrls,
+      participantes: [],
     });
     res.status(201).json({ status: "success", data: event });
   } catch (err) {
@@ -53,17 +61,27 @@ exports.participateEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   try {
     const updates = { ...req.body };
+
+    if (req.files && req.files.length > 0) {
+      const newUrls = req.files.map((file) => file.location);
+      updates.images = newUrls;
+    }
+
     if (updates.hour) {
       updates.time = updates.hour;
       delete updates.hour;
     }
+
     const updatedEvent = await Event.findByIdAndUpdate(req.params.id, updates, {
       new: true,
     });
-    if (!updatedEvent)
+
+    if (!updatedEvent) {
       return res
         .status(404)
         .json({ status: "fail", message: "Evento no encontrado" });
+    }
+
     res.status(200).json({ status: "success", data: updatedEvent });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
