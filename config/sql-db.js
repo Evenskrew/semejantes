@@ -1,23 +1,23 @@
 const { Sequelize } = require("sequelize");
 
-const isProduction = process.env.NODE_ENV === "production";
+const databaseUrl =
+  process.env.DATABASE_URL || "postgres://localhost:5432/semejantes_db";
 
-const sequelize = new Sequelize(
-  process.env.DATABASE_URL || "postgres://localhost:5432/semejantes_db",
-  {
-    dialect: "postgres",
-    logging: false,
+const useSSL =
+  databaseUrl.includes("neon.tech") || process.env.NODE_ENV === "production";
 
-    dialectOptions: isProduction
-      ? {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        }
-      : {},
-  }
-);
+const sequelize = new Sequelize(databaseUrl, {
+  dialect: "postgres",
+  logging: false,
+  dialectOptions: useSSL
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
+    : {},
+});
 
 const connectSQL = async () => {
   try {
