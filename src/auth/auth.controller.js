@@ -15,43 +15,40 @@ exports.signUpCoordinator = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const statusInicial = email === "admin@admin.com" ? "active" : "pending";
+
     const savedUser = await User.create({
       username,
       email,
       password: hashedPassword,
       phone: phone ? String(phone) : null,
       role: "Coordinator",
+      status: statusInicial,
       position,
     });
 
-    const token = issueToken(savedUser);
-    res
-      .status(201)
-      .json({ status: "success", data: { user: savedUser, token } });
+    let token = null;
+    if (statusInicial === "active") {
+      token = issueToken(savedUser);
+    }
+
+    res.status(201).json({
+      status: "success",
+      message:
+        statusInicial === "active"
+          ? "Admin maestro creado y activo."
+          : "Registro recibido. Pendiente de aprobación.",
+      data: { user: savedUser, token },
+    });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
   }
 };
 
 exports.signUpVolunteer = async (req, res) => {
-  const {
-    username,
-    email,
-    password,
-    phone,
-    availability,
-    speciality,
-    hoursContributed,
-  } = req.body;
-
   try {
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ status: "fail", message: "Email already exists." });
-    }
-
+    const { username, email, password, phone, availability, speciality } =
+      req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const savedUser = await User.create({
@@ -60,15 +57,16 @@ exports.signUpVolunteer = async (req, res) => {
       password: hashedPassword,
       phone: phone ? String(phone) : null,
       role: "Volunteer",
+      status: "pending",
       availability,
       speciality,
-      hoursContributed: hoursContributed || 0,
     });
 
-    const token = issueToken(savedUser);
-    res
-      .status(201)
-      .json({ status: "success", data: { user: savedUser, token } });
+    res.status(201).json({
+      status: "success",
+      message: "Registro recibido. Pendiente de aprobación.",
+      data: { id: savedUser.id },
+    });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
   }
@@ -77,43 +75,28 @@ exports.signUpVolunteer = async (req, res) => {
 exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ status: "fail", message: "Require Email and password" });
-    }
-
     const user = await User.findOne({ where: { email } });
-    if (!user) {
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res
         .status(401)
-        .json({ status: "fail", message: "Email or password incorrect" });
+        .json({ status: "fail", message: "Credenciales incorrectas" });
     }
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res
-        .status(401)
-        .json({ status: "fail", message: "Invalid email or password" });
+    if (user.status !== "active") {
+      return res.status(403).json({
+        status: "fail",
+        message: "Tu cuenta aún no ha sido aprobada o fue rechazada.",
+      });
     }
 
     const token = issueToken(user);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-
-    return res.status(200).json({
+    res.status(200).json({
       status: "success",
-      message: "Login successful",
-      user: { id: user.id, email: user.email },
+      token,
+      user: { id: user.id, role: user.role },
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ status: "error", message: err.message });
+    res.status(500).json({ status: "error", message: err.message });
   }
 };

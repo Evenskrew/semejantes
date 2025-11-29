@@ -29,28 +29,18 @@ const User = sequelize.define(
       type: DataTypes.ENUM("Volunteer", "Coordinator"),
       allowNull: false,
     },
+    status: {
+      type: DataTypes.ENUM("pending", "active", "rejected"),
+      defaultValue: "pending",
+    },
     phone: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-
-    position: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-
-    availability: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    speciality: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    hoursContributed: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
+    position: { type: DataTypes.STRING, allowNull: true },
+    availability: { type: DataTypes.STRING, allowNull: true },
+    speciality: { type: DataTypes.STRING, allowNull: true },
+    hoursContributed: { type: DataTypes.INTEGER, defaultValue: 0 },
   },
   {
     timestamps: true,

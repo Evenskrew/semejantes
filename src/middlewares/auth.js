@@ -1,24 +1,35 @@
 const jwt = require("jsonwebtoken");
 
 const authUser = (req, res, next) => {
-  let token = req.cookies?.token;
-  console.log(token);
+  try {
+    let token = req.cookies?.token;
 
-  if (!token) {
-    token =
-      req.headers["authorization"]?.split(" ")[1] ||
-      req.headers["x-access-token"] ||
-      req.query.token;
-  }
+    if (!token) {
+      token =
+        req.headers["authorization"]?.split(" ")[1] ||
+        req.headers["x-access-token"] ||
+        req.query.token;
+    }
 
-  if (!token) {
+    if (!token) {
+      return res
+        .status(401)
+        .json({
+          status: "fail",
+          data: { message: "Unauthorized. No token provided." },
+        });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+
+    req.user = decoded;
+
+    next();
+  } catch (err) {
     return res
       .status(401)
-      .json({ status: "fail", data: { message: "Unauthorized." } });
+      .json({ status: "fail", data: { message: "Invalid or expired Token." } });
   }
-
-  console.log(token);
-  next();
 };
 
 const authRole = (role) => {
@@ -28,7 +39,6 @@ const authRole = (role) => {
         .status(403)
         .json({ status: "fail", data: { message: "Not allowed." } });
     }
-
     next();
   };
 };

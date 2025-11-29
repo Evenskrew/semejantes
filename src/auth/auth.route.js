@@ -1,6 +1,6 @@
 const express = require("express");
 const controller = require("./auth.controller");
-const { handleValidationErrors } = require("../middlewares/validateHelper"); //
+const { handleValidationErrors } = require("../middlewares/validate.helper"); //
 const {
   validateSignUpCoordinator,
   validateSignUpVolunteer,

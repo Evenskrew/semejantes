@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const issueToken = (user) => {
-  const _id = user._id || user.id;
+  const _id = user.id;
   const expiresIn = "2d";
 
   const payload = {
@@ -10,11 +10,9 @@ const issueToken = (user) => {
     role: user.role,
   };
 
-  const signedToken = jwt.sign(payload, process.env.JWT_SECRET, {
+  return jwt.sign(payload, process.env.JWT_SECRET || "secret", {
     expiresIn: expiresIn,
   });
-
-  return "Bearer " + signedToken;
 };
 
 module.exports = { issueToken };

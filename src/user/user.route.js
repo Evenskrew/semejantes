@@ -10,5 +10,11 @@ router.get("/", controller.getUsers);
 router.get("/:id", controller.getUser);
 router.patch("/:id", controller.updateUser);
 router.delete("/:id", controller.deleteUser);
+router.patch(
+  "/:id/status",
+  authUser,
+  authRole("Coordinator"),
+  controller.resolveUserStatus
+);
 
 module.exports = router;

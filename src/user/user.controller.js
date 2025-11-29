@@ -75,3 +75,31 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ status: "error", message: err.message });
   }
 };
+
+exports.resolveUserStatus = async (req, res) => {
+  const { status } = req.body;
+
+  try {
+    if (!["active", "rejected"].includes(status)) {
+      return res.status(400).json({
+        status: "fail",
+        message: 'Estado inválido. Usa "active" o "rejected".',
+      });
+    }
+
+    const [updatedRows] = await User.update(
+      { status },
+      { where: { id: req.params.id } }
+    );
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    res
+      .status(200)
+      .json({ status: "success", message: `Usuario actualizado a ${status}` });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
+};
