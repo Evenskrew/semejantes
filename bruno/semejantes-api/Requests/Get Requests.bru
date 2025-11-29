@@ -1,0 +1,20 @@
+meta {
+  name: Get Requests
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/api/requests
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlkIjozLCJyb2xlIjoiVm9sdW50ZWVyIiwiaWF0IjoxNzY0Mzk2NDAyLCJleHAiOjE3NjQ1NjkyMDJ9.P9Ee9WTUutcKS3Pv4JGoMhIWyLOurPHsAINKkuTu6ow
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

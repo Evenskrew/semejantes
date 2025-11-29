@@ -1,0 +1,20 @@
+meta {
+  name: Delete donation
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/api/donations/692aa0b209aa8ef1de63df4b
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlkIjoyLCJyb2xlIjoiQ29vcmRpbmF0b3IiLCJpYXQiOjE3NjQzOTYwMjUsImV4cCI6MTc2NDU2ODgyNX0.YdNMtnSF-7w4xlWs_ggav4YIbhYYumcpzh4i7vFMWmE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

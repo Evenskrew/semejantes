@@ -1,0 +1,25 @@
+meta {
+  name: Monthly Report
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/api/reports/monthly?month=12&year=2025
+  body: none
+  auth: bearer
+}
+
+params:query {
+  month: 12
+  year: 2025
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlkIjoyLCJyb2xlIjoiQ29vcmRpbmF0b3IiLCJpYXQiOjE3NjQzOTYwMjUsImV4cCI6MTc2NDU2ODgyNX0.YdNMtnSF-7w4xlWs_ggav4YIbhYYumcpzh4i7vFMWmE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,30 @@
+meta {
+  name: New Request
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/requests
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsImlkIjozLCJyb2xlIjoiVm9sdW50ZWVyIiwiaWF0IjoxNzY0Mzk2NDAyLCJleHAiOjE3NjQ1NjkyMDJ9.P9Ee9WTUutcKS3Pv4JGoMhIWyLOurPHsAINKkuTu6ow
+}
+
+body:json {
+  {
+    "title": "Se necesita silla de ruedas",
+    "description": "Se necesita silla de ruedas para don Alberto Suarez",
+    "beneficiaryName": "Alberto Suarez",
+    "beneficiaryAge": 72,
+    "beneficiaryContact": "+56911334455"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

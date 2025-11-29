@@ -1,0 +1,28 @@
+meta {
+  name: Add donation
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/donations
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlkIjoyLCJyb2xlIjoiQ29vcmRpbmF0b3IiLCJpYXQiOjE3NjQzOTYwMjUsImV4cCI6MTc2NDU2ODgyNX0.YdNMtnSF-7w4xlWs_ggav4YIbhYYumcpzh4i7vFMWmE
+}
+
+body:json {
+  {
+    "itemName": "Insulina",
+    "type": "Medicamentos",
+    "available": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
