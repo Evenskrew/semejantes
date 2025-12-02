@@ -1,6 +1,7 @@
 require("dotenv").config({ quiet: true });
 
 const express = require("express");
+const cors = require("cors");
 const connectMongoDB = require("./config/mongo-db");
 const { connectSQL } = require("./config/sql-db");
 const authRouter = require("./src/auth/auth.route");
