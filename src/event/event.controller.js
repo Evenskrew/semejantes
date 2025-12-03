@@ -40,19 +40,26 @@ exports.getEvents = async (req, res) => {
 exports.participateEvent = async (req, res) => {
   try {
     const userId = req.user.id;
+    const { id } = req.params;
 
-    const updatedEvent = await Event.findByIdAndUpdate(
-      req.params.id,
-      { $addToSet: { participantes: userId } },
-      { new: true }
-    );
+    const event = await Event.findById(id);
 
-    if (!updatedEvent)
+    if (!event) {
       return res
         .status(404)
         .json({ status: "fail", message: "Evento no encontrado" });
+    }
 
-    res.status(200).json({ status: "success", data: updatedEvent });
+    if (event.participantes.includes(userId)) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "Ya estás inscrito en este evento." });
+    }
+
+    event.participantes.push(userId);
+    await event.save();
+
+    res.status(200).json({ status: "success", data: event });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
   }
