@@ -18,7 +18,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://semejantes-izk9.onrender.com",
+      "https://semejantes-frontend.onrender.com",
       "http://localhost:5173",
       process.env.FRONTEND_URL,
     ].filter(Boolean),
