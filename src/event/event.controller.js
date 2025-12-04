@@ -146,3 +146,44 @@ exports.generateCertificate = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.leaveEvent = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { id } = req.params;
+
+    const event = await Event.findById(id);
+
+    if (!event) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Evento no encontrado" });
+    }
+
+    const isParticipant = event.participantes.some(
+      (p) => String(p) === String(userId)
+    );
+
+    if (!isParticipant) {
+      return res
+        .status(400)
+        .json({ status: "fail", message: "No estás inscrito en este evento." });
+    }
+
+    event.participantes.pull(userId);
+    await event.save();
+
+    const user = await User.findByPk(userId);
+    if (user) {
+      await user.decrement("hoursContributed", { by: event.duration || 0 });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Has abandonado el evento correctamente.",
+      data: event,
+    });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
+};

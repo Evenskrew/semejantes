@@ -41,3 +41,10 @@ router.delete(
 );
 router.get("/:id/certificate", authUser, controller.generateCertificate);
 module.exports = router;
+
+router.patch(
+  "/:id/leave",
+  authUser,
+  authRole("Volunteer"),
+  controller.leaveEvent
+);
