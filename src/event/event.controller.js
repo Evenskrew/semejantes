@@ -51,7 +51,11 @@ exports.participateEvent = async (req, res) => {
         .json({ status: "fail", message: "Evento no encontrado" });
     }
 
-    if (event.participantes.includes(userId)) {
+    const alreadyJoined = event.participantes.some(
+      (p) => String(p) === String(userId)
+    );
+
+    if (alreadyJoined) {
       return res
         .status(400)
         .json({ status: "fail", message: "Ya estás inscrito en este evento." });
@@ -60,7 +64,16 @@ exports.participateEvent = async (req, res) => {
     event.participantes.push(userId);
     await event.save();
 
-    res.status(200).json({ status: "success", data: event });
+    const user = await User.findByPk(userId);
+    if (user) {
+      await user.increment("hoursContributed", { by: event.duration || 0 });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Inscripción exitosa. Horas registradas.",
+      data: event,
+    });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
   }
